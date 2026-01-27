@@ -7,6 +7,26 @@ server.listen(5000,()=>{
 })
 
 const user=[
+    {id:1, name:"praveen",password:"123",role:'employee'},
+    {id:2, name:"amit",password:"123",role:'hr'},
+    {id:3, name:"rajesh",password:"123",role:'admin'},
+    {id:4, name:"priya",password:"123",role:'employee'},
+    {id:5, name:"vikram",password:"123",role:'hr'},
+    {id:6, name:"ananya",password:"123",role:'admin'},
+    {id:7, name:"sundar",password:"123",role:'employee'},
+    {id:8, name:"neha",password:"123",role:'hr'},
+    {id:9, name:"arjun",password:"123",role:'admin'},
+    {id:10, name:"deepak",password:"123",role:'employee'},
+    {id:11, name:"kavya",password:"123",role:'hr'},
+    {id:12, name:"karan",password:"123",role:'admin'},
+    {id:13, name:"sneha",password:"123",role:'employee'},
+    {id:14, name:"rahul",password:"123",role:'hr'},
+    {id:15, name:"divya",password:"123",role:'admin'},
+    {id:16, name:"sanjay",password:"123",role:'employee'},
+    {id:17, name:"pooja",password:"123",role:'hr'},
+    {id:18, name:"varun",password:"123",role:'admin'},
+    {id:19, name:"shreya",password:"123",role:'employee'},
+    {id:20, name:"aditya",password:"123",role:'hr'}
 ]
 
  //Registration
@@ -79,7 +99,37 @@ server.patch("/pass-change",(req,res)=>{
 
 })
 
-//
+//Delete
+server.delete("/delete",(req,res)=>{
+    
+    let {hid, uid} = req.body;
+
+    if(!hid || !uid) return res.json({message:'Invalid Requuest'})
+
+    const userdetails = user.find((ele)=>ele.id==hid);
+
+    if(userdetails == null) return res.json({message:'Hr not found'})
+
+    if(userdetails.role == "hr"){
+        // Delete UID from DB
+        const index = user.findIndex((ele)=>ele.id == uid)
+        if(index == -1) return res.json({message:"user not found"})
+        
+        // Delete The user 
+
+        user.splice(index,1)
+
+        return res.json({message:"User deleted sccessfulkuu"})
+
+    }
+
+    return res.json({message:'Youur are not athorised to delete'})
+
+
+
+
+
+})
 
 
 
