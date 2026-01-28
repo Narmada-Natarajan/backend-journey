@@ -74,9 +74,9 @@ server.post("/login", (req, res) => {
 
 server.post("/add-product", (req, res) => {
 
-    let { email, password, newproductId, newproductName, newprice, newquantity } = req.body
+    let { email, password, newproductId, newproductName, newprice, newquantity} = req.body
 
-    if (!email || !password || !newproductId || !newproductName || !newprice || !newquantity) {
+    if (!email || !password || !newproductId || !newproductName || !newprice || !newquantity ) {
         return res.json({ message: "invalid request" })
     }
 
@@ -104,11 +104,13 @@ server.post("/add-product", (req, res) => {
         productId: newproductId,
         productName: newproductName,
         price: newprice,
-        quantity: newquantity
+        quantity: newquantity,
+        status: newquantity > 0 ? "in stock" : "out of stock"
+       
     }
 
     products.push(newproduct)
-    return res.json({ message: "New product added", newproduct })
+    return res.json({ message: "New product added succesfully", newproduct })
 })
 
 //View Products (All Users)
@@ -158,32 +160,23 @@ server.patch("/update-product", (req, res) => {
         return res.json({ message: "Only admin can add products" })
     }
 
-    if (userdet.role == "admin") {
+    const index = products.findIndex((i) => i.productId == productId)
 
-        const updatedpro = {
-
-            ...userdet,
-            productName: productName,
-            price: price,
-            quantity: quantity
-
-        }
-
-        const index = products.findIndex((i) => i.productId == productId)
-
-        if (index == -1) {
-            return res.json({ message: "product dont exist" })
-        }
-
-        products.splice(index, 1)
-
-        products.push(updatedpro)
-        return res.json({ message: "product updated succesfully", updatedpro })
-
+    if (index == -1) {
+        return res.json({ message: "product dont exist" })
     }
+
+    products[index].productName = productName;
+    products[index].price = price;
+    products[index].quantity = quantity;
+    products[index].status = quantity > 0 ? "in stock" : "out of stock";
+
+    return res.json({ message: "product updated succesfully", products: products[index] })
+
+
 })
 
-//delete product
+//delete product (Admin only)
 
 server.delete("/delete-product", (req, res) => {
 
@@ -206,11 +199,12 @@ server.delete("/delete-product", (req, res) => {
 
     if (usera.role == "admin") {
 
-        const index = products.find((i) => i.productId == productId)
+        const index = products.findIndex((i) => i.productId == productId)
 
         if (index == -1) {
             return res.json({ message: "product dont exist" })
         }
+
         products.splice(index, 1)
         return res.json({ message: "product deleted succesfully" })
     }
