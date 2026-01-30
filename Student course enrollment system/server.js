@@ -1,90 +1,19 @@
 import express from "express"
-const server = express()
+import { connectDB } from "./config/db.config.js"
+import {userLogin} from "./controllers/login.contollers.js"
+
+const server=express()
+
 server.use(express.json())
+
 server.listen(5000, () => {
     console.log("server is running")
+    connectDB()
 })
 
-const users = [
-    {
-        email: "admin@college.com",
-        password: "admin123",
-        name: "Admin User",
-        role: "admin"
-    },
-    {
-        email: "student1@college.com",
-        password: "stud123",
-        name: "Alice",
-        role: "student"
-    },
-    {
-        email: "student2@college.com",
-        password: "stud456",
-        name: "Bob",
-        role: "student"
-    }
-];
+//User Login and Authentication
 
-const courses = [
-    {
-        courseId: "C101",
-        courseName: "Data Structures",
-        description: "Introduction to arrays, stacks, queues, trees",
-        duration: "12 weeks"
-    },
-    {
-        courseId: "C102",
-        courseName: "Web Development",
-        description: "HTML, CSS, JavaScript, Express.js",
-        duration: "10 weeks"
-    },
-    {
-        courseId: "C103",
-        courseName: "Machine Learning Basics",
-        description: "Supervised and unsupervised learning",
-        duration: "14 weeks"
-    }
-];
-
-const enrollments = [
-    {
-        enrollmentId: 1,
-        studentEmail: "student1@college.com",
-        courseId: "C101"
-    },
-    {
-        enrollmentId: 2,
-        studentEmail: "student2@college.com",
-        courseId: "C102"
-    },
-    {
-        enrollmentId: 3,
-        studentEmail: "student3@college.com",
-        courseId: "C103"
-    }
-];
-
-//1User Login and Authentication
-
-server.post("/login", (req, res) => {
-    let { email, password } = req.body
-
-    if (!email || !password) {
-        return res.json({ message: "Invalid Request" })
-    }
-
-    const userd = users.find((i) => i.email == email)
-
-    if (userd == null) {
-        return res.json({ message: "User not found" })
-
-    }
-    if (userd.password != password) {
-        return res.json({ message: "Invalid Password" })
-    }
-    return res.json({ message: "Login successfull" })
-})
+server.post("/login", userLogin)
 
 // Add  course(Admin Only)
 
